@@ -183,7 +183,6 @@ public class DashboardService {
                     submissions.add(GroupReportResponse.SubmissionHistory.builder()
                             .taskId(task.getTaskId())
                             .taskName(task.getTaskName())
-                            .fileUrl(sub.getFileUrl())
                             .submittedAt(sub.getSubmittedAt().format(DTF))
                             .deadline(task.getDeadline() != null ? task.getDeadline().format(DTF) : null)
                             .onTime(onTime)

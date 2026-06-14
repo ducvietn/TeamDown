@@ -248,15 +248,19 @@ public class ReportService {
 
             int idx = 0;
             for (GroupReportResponse.MemberReport member : report.getMembers()) {
-                var row = memberTableImpl.getRow(idx + 1);
-                row.getCell(0).add(new com.itextpdf.layout.element.Paragraph(safe(member.getName())));
-                row.getCell(1).add(new com.itextpdf.layout.element.Paragraph(fmt(member.getContributionPercent())));
-                row.getCell(2).add(new com.itextpdf.layout.element.Paragraph(String.valueOf(member.getTaskCount())));
-                row.getCell(3).add(new com.itextpdf.layout.element.Paragraph(String.valueOf(
-                        member.getCompletedTaskCount() != null ? member.getCompletedTaskCount() : 0)));
-                row.getCell(4).add(new com.itextpdf.layout.element.Paragraph(fmt(member.getAverageProgress())));
-                row.getCell(5).add(new com.itextpdf.layout.element.Paragraph(
-                        member.getPeerReviewScore() != null ? fmt(member.getPeerReviewScore()) + " /5" : "N/A"));
+                int rowIdx = idx + 1;
+                com.itextpdf.layout.element.Cell nameCell = new com.itextpdf.layout.element.Cell().add(new com.itextpdf.layout.element.Paragraph(safe(member.getName())));
+                com.itextpdf.layout.element.Cell contribCell = new com.itextpdf.layout.element.Cell().add(new com.itextpdf.layout.element.Paragraph(fmt(member.getContributionPercent())));
+                com.itextpdf.layout.element.Cell tasksCell = new com.itextpdf.layout.element.Cell().add(new com.itextpdf.layout.element.Paragraph(String.valueOf(member.getTaskCount())));
+                com.itextpdf.layout.element.Cell completedCell = new com.itextpdf.layout.element.Cell().add(new com.itextpdf.layout.element.Paragraph(String.valueOf(member.getCompletedTaskCount() != null ? member.getCompletedTaskCount() : 0)));
+                com.itextpdf.layout.element.Cell avgCell = new com.itextpdf.layout.element.Cell().add(new com.itextpdf.layout.element.Paragraph(fmt(member.getAverageProgress())));
+                com.itextpdf.layout.element.Cell scoreCell = new com.itextpdf.layout.element.Cell().add(new com.itextpdf.layout.element.Paragraph(member.getPeerReviewScore() != null ? fmt(member.getPeerReviewScore()) + " /5" : "N/A"));
+                memberTable.addCell(rowIdx, 0, nameCell);
+                memberTable.addCell(rowIdx, 1, contribCell);
+                memberTable.addCell(rowIdx, 2, tasksCell);
+                memberTable.addCell(rowIdx, 3, completedCell);
+                memberTable.addCell(rowIdx, 4, avgCell);
+                memberTable.addCell(rowIdx, 5, scoreCell);
                 idx++;
             }
 
@@ -283,13 +287,17 @@ public class ReportService {
                     int subIdx = 0;
                     for (GroupReportResponse.MemberReport member : report.getMembers()) {
                         for (GroupReportResponse.SubmissionHistory sub : member.getSubmissions()) {
-                            var row = subTableImpl.getRow(subIdx + 1);
-                            row.getCell(0).add(new com.itextpdf.layout.element.Paragraph(safe(member.getName())));
-                            row.getCell(1).add(new com.itextpdf.layout.element.Paragraph(safe(sub.getTaskName())));
-                            row.getCell(2).add(new com.itextpdf.layout.element.Paragraph(safe(sub.getSubmittedAt())));
-                            row.getCell(3).add(new com.itextpdf.layout.element.Paragraph(safe(sub.getDeadline())));
-                            row.getCell(4).add(new com.itextpdf.layout.element.Paragraph(
-                                    sub.isOnTime() ? "YES" : "LATE"));
+                            int rowIdx = subIdx + 1;
+                            com.itextpdf.layout.element.Cell mCell = new com.itextpdf.layout.element.Cell().add(new com.itextpdf.layout.element.Paragraph(safe(member.getName())));
+                            com.itextpdf.layout.element.Cell tCell = new com.itextpdf.layout.element.Cell().add(new com.itextpdf.layout.element.Paragraph(safe(sub.getTaskName())));
+                            com.itextpdf.layout.element.Cell sCell = new com.itextpdf.layout.element.Cell().add(new com.itextpdf.layout.element.Paragraph(safe(sub.getSubmittedAt())));
+                            com.itextpdf.layout.element.Cell dCell = new com.itextpdf.layout.element.Cell().add(new com.itextpdf.layout.element.Paragraph(safe(sub.getDeadline())));
+                            com.itextpdf.layout.element.Cell oCell = new com.itextpdf.layout.element.Cell().add(new com.itextpdf.layout.element.Paragraph(sub.isOnTime() ? "YES" : "LATE"));
+                            subTable.addCell(rowIdx, 0, mCell);
+                            subTable.addCell(rowIdx, 1, tCell);
+                            subTable.addCell(rowIdx, 2, sCell);
+                            subTable.addCell(rowIdx, 3, dCell);
+                            subTable.addCell(rowIdx, 4, oCell);
                             subIdx++;
                         }
                     }
@@ -354,11 +362,7 @@ public class ReportService {
         font.setBold(true);
         font.setColor(IndexedColors.WHITE.getIndex());
         style.setFont(font);
-        style.setFillForegroundColor(new org.apache.poi.ss.usermodel.Color() {
-            private final byte[] rgb = new byte[]{44, 62, 80};
-            @Override public void setRGB(byte[] rgb) {}
-            @Override public byte[] getRGB() { return rgb; }
-        });
+        style.setFillForegroundColor(new org.apache.poi.xddf.usermodel.colors.XDDFColor(new java.awt.Color(44, 62, 80)));
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         style.setBorderBottom(BorderStyle.THIN);
         style.setBorderTop(BorderStyle.THIN);

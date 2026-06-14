@@ -38,7 +38,7 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Override
     public MongoClient mongoClient() {
-        return new com.mongodb.client.MongoClients.Builder(mongoUri).build();
+        return com.mongodb.client.MongoClients.create(mongoUri);
     }
 
     /**
