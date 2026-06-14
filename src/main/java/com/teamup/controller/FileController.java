@@ -149,7 +149,7 @@ public class FileController {
             if (resource.isPresent()) {
                 return ResponseEntity.ok().build();
             }
-        } catch (Exception _) {}
+        } catch (Exception ignored) {}
         return ResponseEntity.notFound().build();
     }
 
